@@ -1,6 +1,6 @@
 package fi.lipp.greatheart.directory.service.dto;
 
-import fi.lipp.greatheart.directory.domain.Availability;
+import fi.lipp.greatheart.directory.model.Availability;
 import lombok.Data;
 
 import java.util.Set;

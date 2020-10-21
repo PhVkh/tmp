@@ -1,9 +1,9 @@
 package fi.lipp.greatheart.directory.domain;
 
+import fi.lipp.greatheart.directory.model.Availability;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Data

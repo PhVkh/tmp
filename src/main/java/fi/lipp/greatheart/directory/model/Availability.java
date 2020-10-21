@@ -1,4 +1,4 @@
-package fi.lipp.greatheart.directory.domain;
+package fi.lipp.greatheart.directory.model;
 
 public enum Availability {
     ANY_TIME,
