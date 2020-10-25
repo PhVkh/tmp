@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class EmployeeResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_VIEWER')")
     @GetMapping()
     public ResponseEntity<List<EmployeeDto>> findAll(Pageable pageable) {
         return new ResponseEntity<>(employeeService.findAll(pageable), HttpStatus.OK);
