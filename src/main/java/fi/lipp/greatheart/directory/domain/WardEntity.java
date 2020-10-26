@@ -7,30 +7,41 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
+//TODO : запросы - блокчейн
+
 @Data
 @Entity
-@Table(name = "WARDS")
+@Table(name = "ward")
 public class WardEntity {
-
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
-    //    @NotBlank(message = "")
+    @Column(name = "name")
     private String name;
+    @Column(name = "date_of_birth")
     private String dateOfBirth;
-    //    @NotBlank(message = "")
+    @Column(name = "health_status_id")
+    @Enumerated(EnumType.STRING)
     private Condition condition;
-    //    @NotBlank(message = "")
+    @Column(name = "diagnosis")
     private String diagnosis;
-    //    @NotBlank(message = "")
+    @Column(name = "phone_main")
     private String personalPhone;
-    private String personalPhone2;
+    @Column(name = "phone_backup")
+    private String backupPhone;
+    @Column(name = "email")
     private String personalEmail;
+    @Column(name = "messenger")
     private String messenger;
+    @Column(name = "profession")
     private String profession;
+    @Column(name = "hobbies")
     private String hobbies;
+    @Column(name = "comment")
     private String commentary;
-    @ElementCollection
-    private List<Request> requests;
+//    @ElementCollection
+//    private List<Request> requests;
 
 
 }

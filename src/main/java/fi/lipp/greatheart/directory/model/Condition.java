@@ -2,15 +2,19 @@ package fi.lipp.greatheart.directory.model;
 
 public enum Condition {
 
-    RARE("Ремиссия"),
-    MEDIUM_RARE("Диагностирована болезнь"),
-    MEDIUM("Реабилитация"),
-    MEDIUM_WELL("На лечении"),
-    WELL_DONE("Здоров");
+    REMISSION("Ремиссия"),
+    DISEASE_DIAGNOSED("Диагностирована болезнь"),
+    REHABILITATION("Реабилитация"),
+    TREATMENT("На лечении"),
+    HEALTH("Здоров");
 
-    private String value;
+    private final String value;
 
     Condition(String value) {
         this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

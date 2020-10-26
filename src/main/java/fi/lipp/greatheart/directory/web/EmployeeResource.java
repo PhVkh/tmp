@@ -25,7 +25,7 @@ public class EmployeeResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping()
+    @GetMapping(value = "/")
     public ResponseEntity<List<EmployeeDto>> findAll(Pageable pageable) {
         return new ResponseEntity<>(employeeService.findAll(pageable), HttpStatus.OK);
     }

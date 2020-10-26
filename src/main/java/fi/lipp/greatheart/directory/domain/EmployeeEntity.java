@@ -8,38 +8,69 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "EMPLOYEES")
+@Table(name = "employee")
 public class EmployeeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
-//    @NotBlank(message = "")
+
+    @Column(name = "name")
     private String name;
-//    @NotBlank(message = "")
+
+    @Column(name = "date_of_birth")
     private String dateOfBirth;
-//    @NotBlank(message = "")
-    private String city;
-//    @NotBlank(message = "")
+
+    @Column(name = "city_of_residence")
+   private String city;
+
+    @Column(name = "phone_personal")
     private String personalPhone;
+
+    @Column(name = "email_personal")
     private String personalEmail;
+
+    @Column(name = "messenger")
     private String messenger;
+
+    @Column(name = "phone_work")
     private String workPhone;
+
+    @Column(name = "email_work")
     private String workEmail;
-//    @NotBlank(message = "")
+
+    @Column(name = "place_of_work")
     private String workPlace;
-//    @NotBlank(message = "")
+
+    @Column(name = "position_at_work")
     private String workPosition;
-//    @NotBlank(message = "")
+
+    @Column(name = "position_at_fund")
     private String fundPosition;
+
+    @Column(name = "area_of_responsibility")
     private String responsibilityArea;
+
+    @Column(name = "education_university")
     private String educationUniversity;
+
+    @Column(name = "education_specialty")
     private String educationSpecialization;
-//    @NotBlank(message = "")
+
+    @Column(name = "employee_availability_ids")
     @Enumerated(EnumType.STRING)
     @ElementCollection
     private Set<Availability> availability;
+
+    @Column(name = "availability_comment")
     private String availabilityDescription;
+
+    @Column(name = "level_foreign_languages")
     private String languageProficiency;
+
+    @Column(name = "hobbies")
     private String hobbies;
+
+    @Column(name = "comment")
     private String commentary;
 }

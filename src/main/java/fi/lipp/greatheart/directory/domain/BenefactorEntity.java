@@ -1,35 +1,21 @@
 package fi.lipp.greatheart.directory.domain;
 
-import fi.lipp.greatheart.directory.model.ParthnershipSphere;
 import fi.lipp.greatheart.directory.model.PartnerCategory;
 import fi.lipp.greatheart.directory.model.PartnerType;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
-
-//TODO : логотип
+import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "partner")
-public class PartnerEntity {
-    @Column(name = "id")
+@Table(name = "benefactor")
+public class BenefactorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name = "partner_type_id")
-    private PartnerType type;
-    @Column(name = "registration_details")
-    private String registrationDetails;
-    @Column(name = "payment_details")
-    private String paymentDetails;
-    //private Image logo;
-    @Column(name = "contact_ids")
-    @OneToMany
-    private List<ContactPersonEntity> contacts;
     @Column(name = "phone")
     private String phone;
     @Column(name = "email")
@@ -38,11 +24,10 @@ public class PartnerEntity {
     private String socialNetworks;
     @Column(name = "site")
     private String website;
-    @ElementCollection
-    @Column(name = "sphere_of_partnership_ids")
-    private List<ParthnershipSphere> sphere;
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
     @Column(name = "category_id")
     private PartnerCategory category;
     @Column(name = "comment")
-    private String commentary;
+    private String comment;
 }
