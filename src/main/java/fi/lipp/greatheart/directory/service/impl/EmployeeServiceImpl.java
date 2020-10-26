@@ -1,7 +1,8 @@
-package fi.lipp.greatheart.directory.service;
+package fi.lipp.greatheart.directory.service.impl;
 
 import fi.lipp.greatheart.directory.domain.EmployeeEntity;
 import fi.lipp.greatheart.directory.repository.EmployeeRepository;
+import fi.lipp.greatheart.directory.service.EmployeeService;
 import fi.lipp.greatheart.directory.service.dto.EmployeeDto;
 import fi.lipp.greatheart.directory.service.exceptions.EntityNotFoundException;
 import fi.lipp.greatheart.directory.service.mapper.EmployeeMapper;

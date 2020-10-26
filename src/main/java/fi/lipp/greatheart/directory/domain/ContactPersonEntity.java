@@ -31,7 +31,4 @@ public class ContactPersonEntity {
     private Date end;
     @Column(name = "comment")
     private String commentary;
-
-
-
 }
