@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -13,12 +14,12 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(name = "first_name")
     private String firstName;
+
     @Column(name = "last_name")
     private String lastName;
-    @Column(name = "password")
-    private String password;
 
     @OneToMany(mappedBy = "owner")
     private List<EmailEntity> emails;
@@ -26,16 +27,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "owner")
     private List<PhoneEntity> phones;
 
-    //  private Integer globalRoleId;
-
-    //to change
-    //   private Integer catalogRoleIds;
-
-    // to change
-    //  private Integer trackerRoleIds;
-
-    //  @Column(name = "additional_info", columnDefinition = "json")
-    //  private String additionalInfo;
+    @ElementCollection
+    @CollectionTable(name = "user_catalog_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.ORDINAL)
+    private Set<Role> catalog_roles;
 
 
     @Override

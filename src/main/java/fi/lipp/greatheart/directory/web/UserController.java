@@ -2,6 +2,7 @@ package fi.lipp.greatheart.directory.web;
 import fi.lipp.greatheart.directory.dto.UserDto;
 import fi.lipp.greatheart.directory.service.UserService;
 import fi.lipp.greatheart.directory.service.mappers.UserMapper;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class UserController {
     @PostMapping()
     public ResponseEntity<String> addUser(@RequestBody UserDto user) {
         userService.save(user);
+        Hibernate.initialize(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

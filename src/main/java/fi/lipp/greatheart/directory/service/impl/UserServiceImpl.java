@@ -1,7 +1,5 @@
 package fi.lipp.greatheart.directory.service.impl;
 
-import fi.lipp.greatheart.directory._old.service_old.dto.EmployeeDto;
-import fi.lipp.greatheart.directory._old.service_old.exceptions.EntityNotFoundException;
 import fi.lipp.greatheart.directory.domain.UserEntity;
 import fi.lipp.greatheart.directory.dto.UserDto;
 import fi.lipp.greatheart.directory.repository.UserRepository;
@@ -12,7 +10,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
