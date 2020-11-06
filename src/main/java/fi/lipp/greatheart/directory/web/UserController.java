@@ -1,20 +1,17 @@
 package fi.lipp.greatheart.directory.web;
 import fi.lipp.greatheart.directory.dto.UserDto;
-import fi.lipp.greatheart.directory.service.UserService;
-import fi.lipp.greatheart.directory.service.mappers.UserMapper;
+import fi.lipp.greatheart.directory.service.services.UserService;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("employee")
 public class UserController {
 
     @Autowired

@@ -12,7 +12,7 @@ public class EmailEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name="owner_id")
     private UserEntity owner;
 

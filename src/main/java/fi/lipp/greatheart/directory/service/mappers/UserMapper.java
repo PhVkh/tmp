@@ -1,14 +1,15 @@
 package fi.lipp.greatheart.directory.service.mappers;
 
 import fi.lipp.greatheart.directory.domain.EmailEntity;
+import fi.lipp.greatheart.directory.domain.OtherContactEntity;
 import fi.lipp.greatheart.directory.domain.PhoneEntity;
 import fi.lipp.greatheart.directory.domain.UserEntity;
 import fi.lipp.greatheart.directory.dto.EmailDto;
+import fi.lipp.greatheart.directory.dto.OtherContactDto;
 import fi.lipp.greatheart.directory.dto.PhoneDto;
 import fi.lipp.greatheart.directory.dto.UserDto;
-import jdk.jfr.Name;
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -24,5 +25,10 @@ public interface UserMapper {
     EmailDto convert(EmailEntity entity, @Context CycleAvoidingMappingContext context);
 
     EmailEntity convert(EmailDto dto, @Context CycleAvoidingMappingContext context);
+
+    OtherContactDto convert(OtherContactEntity entity, @Context CycleAvoidingMappingContext context);
+
+    OtherContactEntity convert(OtherContactDto dto, @Context CycleAvoidingMappingContext context);
+
 
 }

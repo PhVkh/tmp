@@ -3,7 +3,7 @@ package fi.lipp.greatheart.directory.service.impl;
 import fi.lipp.greatheart.directory.domain.UserEntity;
 import fi.lipp.greatheart.directory.dto.UserDto;
 import fi.lipp.greatheart.directory.repository.UserRepository;
-import fi.lipp.greatheart.directory.service.UserService;
+import fi.lipp.greatheart.directory.service.services.UserService;
 import fi.lipp.greatheart.directory.service.mappers.CycleAvoidingMappingContext;
 import fi.lipp.greatheart.directory.service.mappers.UserMapper;
 import org.hibernate.Hibernate;
@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService {
 
         List<UserEntity> users = userRepository.findAll();
         Hibernate.initialize(users);
-        System.out.println("hello");
     }
 
 }
