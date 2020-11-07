@@ -24,7 +24,7 @@ public class EntityController {
     @Autowired
     private EntityTypeService entityTypeService;
 
-    @GetMapping(value = {"/{entityName}/{id}","/{entityName}" })
+    @GetMapping(value = {"/{entityName}/{id}", "/{entityName}"})
     public ResponseEntity<List<EntityDto>> findAll(Pageable pageable, @PathVariable String entityName, @PathVariable(required = false) Optional<String> id) {
         if (id.isEmpty()) {
             Long entityId = entityTypeService.findByName(entityName).getId();
@@ -32,7 +32,7 @@ public class EntityController {
         } else
             return new ResponseEntity<>(
                     Collections.singletonList(
-                            entityService.findById(Long.getLong(id.get()))), HttpStatus.OK);
+                            entityService.findById(Long.valueOf(id.get()))), HttpStatus.OK);
     }
 
 
