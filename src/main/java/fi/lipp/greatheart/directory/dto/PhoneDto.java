@@ -6,6 +6,7 @@ import lombok.Data;
 public class PhoneDto {
     private String phone;
     private String type;
+    private String ownerType;
 
     @Override
     public String toString() {

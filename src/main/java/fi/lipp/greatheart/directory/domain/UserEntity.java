@@ -1,5 +1,6 @@
 package fi.lipp.greatheart.directory.domain;
 
+import fi.lipp.greatheart.directory.enums.Availability;
 import lombok.Data;
 
 import javax.persistence.*;

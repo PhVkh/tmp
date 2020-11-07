@@ -1,6 +1,6 @@
 package fi.lipp.greatheart.directory.dto;
 
-import fi.lipp.greatheart.directory.domain.HealthStatus;
+import fi.lipp.greatheart.directory.enums.HealthStatus;
 import lombok.Data;
 
 import java.sql.Date;

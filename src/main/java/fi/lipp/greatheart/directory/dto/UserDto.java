@@ -1,6 +1,6 @@
 package fi.lipp.greatheart.directory.dto;
 
-import fi.lipp.greatheart.directory.domain.Availability;
+import fi.lipp.greatheart.directory.enums.Availability;
 import lombok.Data;
 
 import java.sql.Date;

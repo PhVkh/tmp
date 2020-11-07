@@ -1,6 +1,6 @@
 package fi.lipp.greatheart.directory;
 
-import fi.lipp.greatheart.directory.domain.Availability;
+import fi.lipp.greatheart.directory.enums.Availability;
 import fi.lipp.greatheart.directory.domain.EmailEntity;
 import fi.lipp.greatheart.directory.domain.PhoneEntity;
 import fi.lipp.greatheart.directory.domain.UserEntity;

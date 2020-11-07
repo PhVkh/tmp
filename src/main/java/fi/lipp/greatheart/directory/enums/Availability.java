@@ -1,4 +1,4 @@
-package fi.lipp.greatheart.directory.domain;
+package fi.lipp.greatheart.directory.enums;
 
 
 public enum Availability {
