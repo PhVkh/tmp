@@ -22,7 +22,7 @@ jobs:
     - name: Save jar artifact
       uses: actions/upload-artifact@master
       with:
-        name: tracker
+        name: directory
         path: build/libs/directory-0.0.1.jar
 
   deploy:
@@ -33,13 +33,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
-          name: tracker
+          name: directory
           path: build/libs/directory-0.0.1.jar
       - name: Deploy the package to the remote server
         uses: garygrossgarten/github-action-scp@release
         with:
           local: build/libs/directory-0.0.1.jar
-          remote: tracker/directory-0.0.1.jar
+          remote: directory/directory-0.0.1.jar
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
