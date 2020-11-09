@@ -10,5 +10,7 @@ public interface EntityTypeService {
 
     EntityTypeDto findByName(String entityTypeName);
 
+    List<EntityTypeDto> findMainEntities();
+
     void save(EntityTypeDto dto);
 }

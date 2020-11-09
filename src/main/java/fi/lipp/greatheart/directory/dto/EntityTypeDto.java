@@ -15,4 +15,6 @@ public class EntityTypeDto {
     String description;
 
     List<String> necessaryFields;
+
+    Boolean main;
 }

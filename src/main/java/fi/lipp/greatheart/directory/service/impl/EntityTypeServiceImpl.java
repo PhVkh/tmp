@@ -34,6 +34,13 @@ public class EntityTypeServiceImpl implements EntityTypeService {
     }
 
     @Override
+    public List<EntityTypeDto> findMainEntities() {
+        return repository.findByMainTrue()
+                .stream().map(x -> mapper.convert(x))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void save(EntityTypeDto dto) {
         EntityTypeEntity entity = mapper.convert(dto);
         repository.save(entity);

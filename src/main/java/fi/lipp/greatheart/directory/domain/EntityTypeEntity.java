@@ -32,4 +32,7 @@ public class EntityTypeEntity {
             columnDefinition = "text[]"
     )
     List<String> necessaryFields;
+
+    @Column(name = "is_main")
+    Boolean main;
 }

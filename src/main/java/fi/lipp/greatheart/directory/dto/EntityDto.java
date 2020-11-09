@@ -7,5 +7,5 @@ import java.util.Map;
 @Data
 public class EntityDto {
     private Map<String, Object> json;
-    private Long entityType;
+//    private Long entityType;
 }

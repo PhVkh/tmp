@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface EntityTypeRepository extends JpaRepository<EntityTypeEntity, Long> {
     EntityTypeEntity findByName(String name);
-    List<String> findNecessaryFieldsById(Long id);
+   EntityTypeEntity findNecessaryFieldsById(Long id);
+
+    List<EntityTypeEntity> findByMainTrue();
 }
