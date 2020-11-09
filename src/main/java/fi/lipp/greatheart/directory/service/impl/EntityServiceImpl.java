@@ -7,6 +7,7 @@ import fi.lipp.greatheart.directory.repository.EntityRepository;
 import fi.lipp.greatheart.directory.repository.EntityTypeRepository;
 import fi.lipp.greatheart.directory.service.mappers.EntityMapper;
 import fi.lipp.greatheart.directory.service.services.EntityService;
+import fi.lipp.greatheart.directory.web.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,13 +42,13 @@ public class EntityServiceImpl implements EntityService {
 
 
     //TODO : какой эксепшен кидать и как его правильно ловить
-    public void save(EntityDto dto, Long entityTypeId) {
+    public Response<EntityEntity> save(EntityDto dto, Long entityTypeId) {
         EntityEntity entity = mapper.convert(dto);
         entity.setEntityType(entityTypeId);
 
         Optional<EntityTypeEntity> entityType= entityTypeRepository.findById(entityTypeId);
         if(entityType.isEmpty())
-            throw new IllegalArgumentException();
+            return Response.BAD("ошибка");
 
         //находим какие поля должны быть у сущности данного типа
         List<String> necessaryFields = entityType.get().getNecessaryFields();
@@ -59,11 +60,11 @@ public class EntityServiceImpl implements EntityService {
         //Проверим, что значения в ключах ненулевые
         for (String field : necessaryFields) {
             if (entity.getJson().get(field) == null)
-                throw new IllegalArgumentException();
+                return Response.BAD("ошибка");
         }
 
         //вроде все проверили, теперь можно и сохранить
-        entityRepository.save(entity);
+        return Response.EXECUTE(() -> entityRepository.save(entity));
     }
 
     @Override

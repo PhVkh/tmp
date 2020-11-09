@@ -1,5 +1,6 @@
 package fi.lipp.greatheart.directory.web;
 
+import fi.lipp.greatheart.directory.domain.EntityEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
 import fi.lipp.greatheart.directory.dto.EnumDto;
@@ -38,11 +39,11 @@ public class EntityController {
     }
 
     @PostMapping(value = "/addEntity")
-    public ResponseEntity<String> addEntity(@RequestBody EntityDto dto,
-                                            @RequestParam("entityType") String entityTypeId) {
-        entityService.save(dto, Long.valueOf(entityTypeId));
-        Hibernate.initialize(dto);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Response<EntityEntity>> addEntity(@RequestBody EntityDto dto,
+                                                           @RequestParam("entityType") String entityTypeId) {
+        return Response
+                .EXECUTE_RAW(() -> entityService.save(dto, Long.valueOf(entityTypeId)))
+                .makeResponse();
     }
 
     @PostMapping(value = "/addEnum")

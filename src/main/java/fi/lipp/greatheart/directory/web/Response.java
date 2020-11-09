@@ -43,7 +43,7 @@ public class Response<T> {
         try {
             return Response.OK(supplier.get());
         } catch (Exception exception) {
-            return Response.BAD("Неожиданная ошибка:\n" + exception.toString());
+            return Response.BAD("Неожиданная ошибка:\n" + exception.getMessage());
         }
     }
 
@@ -51,7 +51,7 @@ public class Response<T> {
         try {
             return supplier.get();
         } catch (Exception exception) {
-            return Response.BAD("Неожиданная ошибка:\n" + exception.toString());
+            return Response.BAD("Неожиданная ошибка:\n" + exception.getMessage());
         }
     }
 
