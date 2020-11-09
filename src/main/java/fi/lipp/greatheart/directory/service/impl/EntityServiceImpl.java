@@ -1,6 +1,7 @@
 package fi.lipp.greatheart.directory.service.impl;
 
 import fi.lipp.greatheart.directory.domain.EntityEntity;
+import fi.lipp.greatheart.directory.domain.EntityTypeEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.repository.EntityRepository;
 import fi.lipp.greatheart.directory.repository.EntityTypeRepository;
@@ -38,21 +39,38 @@ public class EntityServiceImpl implements EntityService {
                 .collect(Collectors.toList());
     }
 
-    public void save(EntityDto dto) {
-        EntityEntity entity = mapper.convert(dto);
-        entity.setEntityType(1L);
-        List<String> fields = entityTypeRepository.findNecessaryFieldsById(1L).getNecessaryFields();
-        entityRepository.save(entity);
 
+    //TODO : какой эксепшен кидать и как его правильно ловить
+    public void save(EntityDto dto, Long entityTypeId) {
+        EntityEntity entity = mapper.convert(dto);
+        entity.setEntityType(entityTypeId);
+
+        Optional<EntityTypeEntity> entityType= entityTypeRepository.findById(entityTypeId);
+        if(entityType.isEmpty())
+            throw new IllegalArgumentException();
+
+        //находим какие поля должны быть у сущности данного типа
+        List<String> necessaryFields = entityType.get().getNecessaryFields();
+
+        //Проверим, что в json содержатся все необходимые ключи
+        if(!entity.getJson().keySet().containsAll(necessaryFields))
+            throw new IllegalArgumentException();
+
+        //Проверим, что значения в ключах ненулевые
+        for (String field : necessaryFields) {
+            if (entity.getJson().get(field) == null)
+                throw new IllegalArgumentException();
+        }
+
+        //вроде все проверили, теперь можно и сохранить
+        entityRepository.save(entity);
     }
 
     @Override
     public EntityDto findById(Long id) {
         Optional<EntityEntity> entity = entityRepository.findById(id);
 
-        if(entity.isPresent())
-            return mapper.convert(entity.get());
+        return entity.map(entityEntity -> mapper.convert(entityEntity)).orElse(null);
 
-        return null;
     }
 }

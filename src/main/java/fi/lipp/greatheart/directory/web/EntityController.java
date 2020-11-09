@@ -38,8 +38,9 @@ public class EntityController {
     }
 
     @PostMapping(value = "/addEntity")
-    public ResponseEntity<String> addEntity(@RequestBody EntityDto dto) {
-        entityService.save(dto);
+    public ResponseEntity<String> addEntity(@RequestBody EntityDto dto,
+                                            @RequestParam("entityType") String entityTypeId) {
+        entityService.save(dto, Long.valueOf(entityTypeId));
         Hibernate.initialize(dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -52,11 +53,11 @@ public class EntityController {
     }
 
 
-    @GetMapping(value = {"/{entityName}/{id}", "/{entityName}"})
-    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityName, @PathVariable(required = false) Optional<String> id) {
+    @GetMapping(value = {"/{entityTypeName}/{id}", "/{entityTypeName}"})
+    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeName, @PathVariable(required = false) Optional<String> id) {
         if (id.isEmpty()) {
-            EntityTypeDto entityType =  entityTypeService.findByName(entityName);
-            if(entityType  == null)
+            EntityTypeDto entityType = entityTypeService.findByName(entityTypeName);
+            if (entityType == null)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             Long entityId = entityType.getId();
             return new ResponseEntity<>(entityService.findByEntityType(entityId), HttpStatus.OK);
@@ -65,7 +66,6 @@ public class EntityController {
                     Collections.singletonList(
                             entityService.findById(Long.valueOf(id.get()))), HttpStatus.OK);
     }
-
 
 
 }
