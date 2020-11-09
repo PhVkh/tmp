@@ -4,8 +4,13 @@ import fi.lipp.greatheart.directory.domain.EntityTypeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EntityTypeRepository extends JpaRepository<EntityTypeEntity, Long> {
-    EntityTypeEntity findByName(String name);
-    List<String> findNecessaryFieldsById(Long id);
+    Optional<EntityTypeEntity> findByName(String name);
+
+    Optional<EntityTypeEntity> findById(Long id);
+
+    List<EntityTypeEntity> findByMainTrue();
 }
+

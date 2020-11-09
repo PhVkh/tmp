@@ -2,11 +2,13 @@ package fi.lipp.greatheart.directory.web;
 
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
+import fi.lipp.greatheart.directory.dto.EnumDto;
 import fi.lipp.greatheart.directory.service.services.EntityService;
 import fi.lipp.greatheart.directory.service.services.EntityTypeService;
+import fi.lipp.greatheart.directory.service.services.EnumService;
+import fi.lipp.greatheart.directory.service.services.EnumTypeService;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +26,40 @@ public class EntityController {
     @Autowired
     private EntityTypeService entityTypeService;
 
-    @GetMapping(value = {"/{entityName}/{id}", "/{entityName}"})
-    public ResponseEntity<List<EntityDto>> findAll(Pageable pageable, @PathVariable String entityName, @PathVariable(required = false) Optional<String> id) {
+    @Autowired
+    EnumTypeService enumTypeService;
+
+    @Autowired
+    EnumService enumService;
+
+    @GetMapping(value = {"/mainTypes"})
+    public ResponseEntity<List<EntityTypeDto>> findAll() {
+        return new ResponseEntity<>(entityTypeService.findMainEntities(), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/addEntity")
+    public ResponseEntity<String> addEntity(@RequestBody EntityDto dto,
+                                            @RequestParam("entityType") String entityTypeId) {
+        entityService.save(dto, Long.valueOf(entityTypeId));
+        Hibernate.initialize(dto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/addEnum")
+    public ResponseEntity<String> addEnum(@RequestBody EnumDto dto) {
+        enumService.save(dto);
+        Hibernate.initialize(dto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = {"/{entityTypeName}/{id}", "/{entityTypeName}"})
+    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeName, @PathVariable(required = false) Optional<String> id) {
         if (id.isEmpty()) {
-            Long entityId = entityTypeService.findByName(entityName).getId();
+            EntityTypeDto entityType = entityTypeService.findByName(entityTypeName);
+            if (entityType == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Long entityId = entityType.getId();
             return new ResponseEntity<>(entityService.findByEntityType(entityId), HttpStatus.OK);
         } else
             return new ResponseEntity<>(
@@ -36,15 +68,4 @@ public class EntityController {
     }
 
 
-    @GetMapping(value = {"/types"})
-    public ResponseEntity<List<EntityTypeDto>> findAll(Pageable pageable) {
-        return new ResponseEntity<>(entityTypeService.findAll(pageable), HttpStatus.OK);
-    }
-
-    @PostMapping()
-    public ResponseEntity<String> addEntity(@RequestBody EntityDto dto) {
-        entityService.save(dto);
-        Hibernate.initialize(dto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

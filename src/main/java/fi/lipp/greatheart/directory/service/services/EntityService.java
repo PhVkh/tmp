@@ -8,7 +8,7 @@ import java.util.List;
 public interface EntityService {
     List<EntityDto> findAll(Pageable pageable);
     List<EntityDto> findByEntityType(Long entityTypeId);
-    void save(EntityDto dto);
+    void save(EntityDto dto, Long enumTypeId);
 
     EntityDto findById(Long id);
 }

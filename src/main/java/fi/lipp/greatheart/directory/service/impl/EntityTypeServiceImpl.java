@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,8 +30,15 @@ public class EntityTypeServiceImpl implements EntityTypeService {
 
     @Override
     public EntityTypeDto findByName(String entityTypeName) {
-        return mapper.convert(
-                repository.findByName(entityTypeName));
+        Optional<EntityTypeEntity> entityType = repository.findByName(entityTypeName);
+        return entityType.map(x -> mapper.convert(x)).orElse(null);
+    }
+
+    @Override
+    public List<EntityTypeDto> findMainEntities() {
+        return repository.findByMainTrue()
+                .stream().map(x -> mapper.convert(x))
+                .collect(Collectors.toList());
     }
 
     @Override
