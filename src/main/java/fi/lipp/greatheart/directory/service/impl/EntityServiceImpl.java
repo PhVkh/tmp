@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,27 +42,37 @@ public class EntityServiceImpl implements EntityService {
     }
 
 
-    //TODO : какой эксепшен кидать и как его правильно ловить
     public Response<EntityEntity> save(EntityDto dto, Long entityTypeId) {
         EntityEntity entity = mapper.convert(dto);
         entity.setEntityType(entityTypeId);
 
-        Optional<EntityTypeEntity> entityType= entityTypeRepository.findById(entityTypeId);
-        if(entityType.isEmpty())
-            return Response.BAD("ошибка");
+        Optional<EntityTypeEntity> entityType = entityTypeRepository.findById(entityTypeId);
+        if (entityType.isEmpty())
+            return Response.BAD("Не существует сущности с id = " + entityTypeId);
 
         //находим какие поля должны быть у сущности данного типа
         List<String> necessaryFields = entityType.get().getNecessaryFields();
 
         //Проверим, что в json содержатся все необходимые ключи
-        if(!entity.getJson().keySet().containsAll(necessaryFields))
-            throw new IllegalArgumentException();
-
+        if (!entity.getJson().keySet().containsAll(necessaryFields)) {
+            List<String> notFound = new ArrayList<>();
+            //Найдем поля, которых нет в сущности, но которые должны быть
+            for (String field : necessaryFields) {
+                if (!entity.getJson().containsKey(field))
+                    notFound.add(field);
+            }
+            return Response.BAD("В данной сущности не хватает следующих необходимых полей : "
+                    + notFound.toString());
+        }
+        List<String> nullFields = new ArrayList<>();
         //Проверим, что значения в ключах ненулевые
         for (String field : necessaryFields) {
             if (entity.getJson().get(field) == null)
-                return Response.BAD("ошибка");
+                nullFields.add(field);
         }
+        if (nullFields.size() > 0)
+            return Response.BAD("В данной сущности следующие необходимые поля не заполнены : "
+                    + nullFields.toString());
 
         //вроде все проверили, теперь можно и сохранить
         return Response.EXECUTE(() -> entityRepository.save(entity));
