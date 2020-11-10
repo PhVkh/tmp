@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -40,9 +41,25 @@ public class EntityController {
 
     @PostMapping(value = "/addEntity")
     public ResponseEntity<Response<EntityEntity>> addEntity(@RequestBody EntityDto dto,
-                                                           @RequestParam("entityType") String entityTypeId) {
+                                                            @RequestParam("entityType") String entityTypeId) {
         return Response
                 .EXECUTE_RAW(() -> entityService.save(dto, Long.valueOf(entityTypeId)))
+                .makeResponse();
+    }
+
+    @PostMapping(value = "/updateEntity")
+    public ResponseEntity<Response<EntityEntity>> updateEntity(@RequestBody Map<String, Object> toUpdate,
+                                                               @RequestParam Long entityId) {
+        return Response
+                .EXECUTE_RAW(() -> entityService.updateFields(entityId, toUpdate))
+                .makeResponse();
+    }
+
+    @PostMapping(value = "/addTransactions")
+    public ResponseEntity<Response<Boolean>> addTransactions(@RequestBody Map<String, Object[]> toUpdate,
+                                                                  @RequestParam Long entityId) {
+        return Response
+                .EXECUTE_RAW(() -> entityService.addValuesToArray(entityId, toUpdate))
                 .makeResponse();
     }
 

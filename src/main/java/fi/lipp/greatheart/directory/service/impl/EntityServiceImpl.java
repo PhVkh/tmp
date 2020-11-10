@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +39,6 @@ public class EntityServiceImpl implements EntityService {
                 .collect(Collectors.toList());
     }
 
-
     //TODO : какой эксепшен кидать и как его правильно ловить
     public Response<EntityEntity> save(EntityDto dto, Long entityTypeId) {
         EntityEntity entity = mapper.convert(dto);
@@ -65,6 +63,37 @@ public class EntityServiceImpl implements EntityService {
 
         //вроде все проверили, теперь можно и сохранить
         return Response.EXECUTE(() -> entityRepository.save(entity));
+    }
+
+    @Override
+    public Response<EntityEntity> updateFields(Long entityId, Map<String, Object> toUpdate) {
+        Optional<EntityEntity> entityOptional = entityRepository.findById(entityId);
+        if (entityOptional.isEmpty()) {
+            return Response.BAD("Не найдена запись в справочнике (id : %d)", entityId);
+        }
+        EntityEntity entity = entityOptional.get();
+        toUpdate.forEach((key, value) -> entity.getJson().put(key, value));
+        return Response.EXECUTE(() -> entityRepository.save(entity));
+    }
+
+    @Override
+    public Response<Boolean> addValuesToArray(Long entityId, Map<String, Object[]> valuesToAdd) {
+        Optional<EntityEntity> entityOptional = entityRepository.findById(entityId);
+        if (entityOptional.isEmpty()) {
+            return Response.BAD("Не найдена запись в справочнике (id : %d)", entityId);
+        }
+        EntityEntity entity = entityOptional.get();
+        valuesToAdd.forEach((key, values) -> {
+            if (entity.getJson().containsKey(key)) {
+                ((ArrayList) entity.getJson().get(key)).addAll(Arrays.asList(values));
+            } else {
+                entity.getJson().put(key, values);
+            }
+        });
+        return Response.EXECUTE(() -> {
+            entityRepository.save(entity);
+            return true;
+        });
     }
 
     @Override
