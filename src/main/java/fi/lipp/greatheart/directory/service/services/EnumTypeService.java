@@ -9,6 +9,4 @@ public interface EnumTypeService {
     List<EnumTypeDto> findAllEnumTypes();
 
     EnumTypeDto findEnumTypeById(Long id);
-
-    EnumTypeDto findEnumTypeByEngName(String engName);
 }

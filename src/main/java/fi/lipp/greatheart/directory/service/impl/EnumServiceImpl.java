@@ -25,12 +25,6 @@ public class EnumServiceImpl implements EnumService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<EnumDto> findEnumsByEnumTypeEngName(String engName) {
-        return repository.findAllByEngName(engName).stream()
-                .map(x -> mapper.convert(x))
-                .collect(Collectors.toList());
-    }
 
     @Override
     public EnumDto findEnumById(Long enumId) {

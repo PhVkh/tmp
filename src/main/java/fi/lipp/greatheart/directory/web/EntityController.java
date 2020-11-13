@@ -4,6 +4,7 @@ import fi.lipp.greatheart.directory.domain.EntityEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
 import fi.lipp.greatheart.directory.dto.EnumDto;
+import fi.lipp.greatheart.directory.dto.EnumTypeDto;
 import fi.lipp.greatheart.directory.service.services.EntityService;
 import fi.lipp.greatheart.directory.service.services.EntityTypeService;
 import fi.lipp.greatheart.directory.service.services.EnumService;
@@ -65,13 +66,17 @@ public class EntityController {
 
     @PostMapping(value = "/addEnum")
     public ResponseEntity<String> addEnum(@RequestBody EnumDto dto,
-                                          @RequestParam String enumType) {
+                                          @RequestParam String enumTypeId) {
         //проверяем,что такой enum существует
-
+        EnumTypeDto enumTypeEntity = enumTypeService.findEnumTypeById(Long.valueOf(enumTypeId));
+        if (enumTypeEntity == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         enumService.save(dto, 0L);
         Hibernate.initialize(dto);
         return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
 

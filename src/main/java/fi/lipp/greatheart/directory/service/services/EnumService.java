@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface EnumService {
     List<EnumDto> findEnumsByEnumTypeId(Long enumTypeId);
-    List<EnumDto> findEnumsByEnumTypeEngName(String engName);
 
     EnumDto findEnumById(Long enumId);
 

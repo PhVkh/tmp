@@ -44,7 +44,7 @@ public abstract class EntityMapper {
                     Optional<EnumEntity> structureEntity = enumRepository.findById(
                             ((Integer) structure.get("id")).longValue());
                     if (structureEntity.isPresent()) {
-                        String value = structureEntity.get().getRusName();
+                        String value = structureEntity.get().getName();
                         json.put(key, value);
                     } else {
                         //TODO : бросить эксепшн
