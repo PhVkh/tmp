@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,41 +39,61 @@ public class EntityServiceImpl implements EntityService {
                 .collect(Collectors.toList());
     }
 
-
+    //TODO : какой эксепшен кидать и как его правильно ловить
     public Response<EntityEntity> save(EntityDto dto, Long entityTypeId) {
         EntityEntity entity = mapper.convert(dto);
         entity.setEntityType(entityTypeId);
 
-        Optional<EntityTypeEntity> entityType = entityTypeRepository.findById(entityTypeId);
-        if (entityType.isEmpty())
-            return Response.BAD("Не существует сущности с id = " + entityTypeId);
+        Optional<EntityTypeEntity> entityType= entityTypeRepository.findById(entityTypeId);
+        if(entityType.isEmpty())
+            return Response.BAD("ошибка");
 
         //находим какие поля должны быть у сущности данного типа
         List<String> necessaryFields = entityType.get().getNecessaryFields();
 
         //Проверим, что в json содержатся все необходимые ключи
-        if (!entity.getJson().keySet().containsAll(necessaryFields)) {
-            List<String> notFound = new ArrayList<>();
-            //Найдем поля, которых нет в сущности, но которые должны быть
-            for (String field : necessaryFields) {
-                if (!entity.getJson().containsKey(field))
-                    notFound.add(field);
-            }
-            return Response.BAD("В данной сущности не хватает следующих необходимых полей : "
-                    + notFound.toString());
-        }
-        List<String> nullFields = new ArrayList<>();
+        if(!entity.getJson().keySet().containsAll(necessaryFields))
+            throw new IllegalArgumentException();
+
         //Проверим, что значения в ключах ненулевые
         for (String field : necessaryFields) {
             if (entity.getJson().get(field) == null)
-                nullFields.add(field);
+                return Response.BAD("ошибка");
         }
-        if (nullFields.size() > 0)
-            return Response.BAD("В данной сущности следующие необходимые поля не заполнены : "
-                    + nullFields.toString());
 
         //вроде все проверили, теперь можно и сохранить
         return Response.EXECUTE(() -> entityRepository.save(entity));
+    }
+
+    @Override
+    public Response<EntityEntity> updateFields(Long entityId, Map<String, Object> toUpdate) {
+        Optional<EntityEntity> entityOptional = entityRepository.findById(entityId);
+        if (entityOptional.isEmpty()) {
+            return Response.BAD("Не найдена запись в справочнике (id : %d)", entityId);
+        }
+        EntityEntity entity = entityOptional.get();
+        toUpdate.forEach((key, value) -> entity.getJson().put(key, value));
+        return Response.EXECUTE(() -> entityRepository.save(entity));
+    }
+
+    @Override
+    public Response<Boolean> addValuesToArray(Long entityId, Map<String, Object[]> valuesToAdd) {
+        Optional<EntityEntity> entityOptional = entityRepository.findById(entityId);
+        if (entityOptional.isEmpty()) {
+            return Response.BAD("Не найдена запись в справочнике (id : %d)", entityId);
+        }
+        EntityEntity entity = entityOptional.get();
+        valuesToAdd.forEach((key, values) -> {
+            if (entity.getJson().containsKey(key)) {
+                ((ArrayList) entity.getJson().get(key)).addAll(Arrays.asList(values));
+            } else {
+                entity.getJson().put(key, values);
+            }
+        });
+        return Response.EXECUTE(() -> {
+            entityRepository.save(entity);
+            return true;
+        });
     }
 
     @Override
