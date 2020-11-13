@@ -65,7 +65,7 @@ public class EntityController {
 
     @PostMapping(value = "/addEnum")
     public ResponseEntity<String> addEnum(@RequestBody EnumDto dto) {
-        enumService.save(dto);
+        enumService.save(dto, 0L);
         Hibernate.initialize(dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
