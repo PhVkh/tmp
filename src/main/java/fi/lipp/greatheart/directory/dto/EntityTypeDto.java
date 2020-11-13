@@ -17,4 +17,6 @@ public class EntityTypeDto {
     List<String> necessaryFields;
 
     Boolean main;
+
+    String titleField;
 }

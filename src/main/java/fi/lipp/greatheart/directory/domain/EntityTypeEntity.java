@@ -35,4 +35,7 @@ public class EntityTypeEntity {
 
     @Column(name = "is_main")
     Boolean main;
+
+    @Column(name = "title_field")
+    String titleField;
 }
