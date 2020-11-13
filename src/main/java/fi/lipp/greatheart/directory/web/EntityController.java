@@ -3,13 +3,10 @@ package fi.lipp.greatheart.directory.web;
 import fi.lipp.greatheart.directory.domain.EntityEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
-import fi.lipp.greatheart.directory.dto.EnumDto;
-import fi.lipp.greatheart.directory.dto.EnumTypeDto;
 import fi.lipp.greatheart.directory.service.services.EntityService;
 import fi.lipp.greatheart.directory.service.services.EntityTypeService;
 import fi.lipp.greatheart.directory.service.services.EnumService;
 import fi.lipp.greatheart.directory.service.services.EnumTypeService;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,24 +61,9 @@ public class EntityController {
                 .makeResponse();
     }
 
-    @PostMapping(value = "/addEnum")
-    public ResponseEntity<String> addEnum(@RequestBody EnumDto dto,
-                                          @RequestParam String enumTypeId) {
-        //проверяем,что такой enum существует
-        EnumTypeDto enumTypeEntity = enumTypeService.findEnumTypeById(Long.valueOf(enumTypeId));
-        if (enumTypeEntity == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        enumService.save(dto, 0L);
-        Hibernate.initialize(dto);
-        return new ResponseEntity<>(HttpStatus.OK);
-
-    }
-
 
     @GetMapping(value = {"/{entityTypeId}/{id}", "/{entityTypeId}"})
-    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeId, @PathVariable(required = false) Optional<String> id) {
+    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeId, @PathVariable(required = false) Optional<Long> id) {
         if (id.isEmpty()) {
             EntityTypeDto entityType = entityTypeService.findById(Long.valueOf(entityTypeId));
             if (entityType == null)
@@ -91,7 +73,7 @@ public class EntityController {
         } else
             return new ResponseEntity<>(
                     Collections.singletonList(
-                            entityService.findById(Long.valueOf(id.get()))), HttpStatus.OK);
+                            entityService.findById(id.get())), HttpStatus.OK);
     }
 
 

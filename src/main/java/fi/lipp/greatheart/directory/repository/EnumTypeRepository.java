@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface EnumTypeRepository extends JpaRepository<EnumTypeEntity, Long> {
     Optional<EnumTypeEntity> findById(Long id);
-
 }

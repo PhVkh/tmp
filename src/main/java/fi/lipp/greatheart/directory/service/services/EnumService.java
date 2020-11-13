@@ -1,13 +1,13 @@
 package fi.lipp.greatheart.directory.service.services;
 
+import fi.lipp.greatheart.directory.domain.EnumEntity;
 import fi.lipp.greatheart.directory.dto.EnumDto;
-
-import java.util.List;
+import fi.lipp.greatheart.directory.web.Response;
 
 public interface EnumService {
-    List<EnumDto> findEnumsByEnumTypeId(Long enumTypeId);
+    Response findEnumsByEnumTypeId(Long enumTypeId);
 
     EnumDto findEnumById(Long enumId);
 
-    void save(EnumDto dto, Long id);
+    Response<EnumEntity> save(EnumDto dto, Long id);
 }

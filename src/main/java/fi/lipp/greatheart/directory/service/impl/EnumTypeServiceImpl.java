@@ -5,11 +5,13 @@ import fi.lipp.greatheart.directory.dto.EnumTypeDto;
 import fi.lipp.greatheart.directory.repository.EnumTypeRepository;
 import fi.lipp.greatheart.directory.service.mappers.EnumTypeMapper;
 import fi.lipp.greatheart.directory.service.services.EnumTypeService;
+import fi.lipp.greatheart.directory.web.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EnumTypeServiceImpl implements EnumTypeService {
@@ -19,8 +21,10 @@ public class EnumTypeServiceImpl implements EnumTypeService {
     EnumTypeMapper mapper;
 
     @Override
-    public List<EnumTypeDto> findAllEnumTypes() {
-        return null;
+    public Response<List<EnumTypeDto>> findAllEnumTypes() {
+        return Response.EXECUTE(() -> repository.findAll()
+                .stream().map(x -> mapper.convert(x))
+                .collect(Collectors.toList()));
     }
 
     @Override

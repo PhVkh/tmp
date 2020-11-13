@@ -46,7 +46,7 @@ public class EntityServiceImpl implements EntityService {
 
         Optional<EntityTypeEntity> entityType= entityTypeRepository.findById(entityTypeId);
         if(entityType.isEmpty())
-            return Response.BAD("ошибка");
+            return Response.BAD("Типа сущности с id " + entityTypeId + "не существует в базе.");
 
         //находим какие поля должны быть у сущности данного типа
         List<String> necessaryFields = entityType.get().getNecessaryFields();

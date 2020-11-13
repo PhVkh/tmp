@@ -1,12 +1,11 @@
 package fi.lipp.greatheart.directory.service.services;
 
 import fi.lipp.greatheart.directory.dto.EnumTypeDto;
-
-import java.util.List;
+import fi.lipp.greatheart.directory.web.Response;
 
 public interface EnumTypeService {
 
-    List<EnumTypeDto> findAllEnumTypes();
+    Response findAllEnumTypes();
 
     EnumTypeDto findEnumTypeById(Long id);
 }
