@@ -22,8 +22,6 @@ public class EntityTypeEntity {
 
     String name;
 
-    String rus_name;
-
     String description;
 
     @Type(type = "list-array")

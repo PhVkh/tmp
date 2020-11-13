@@ -10,8 +10,6 @@ public class EntityTypeDto {
 
     String name;
 
-    String rus_name;
-
     String description;
 
     List<String> necessaryFields;

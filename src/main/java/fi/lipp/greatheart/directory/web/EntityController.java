@@ -67,16 +67,18 @@ public class EntityController {
     public ResponseEntity<String> addEnum(@RequestBody EnumDto dto,
                                           @RequestParam String enumType) {
         //проверяем,что такой enum существует
-        enumService.save(dto,0L );
+
+
+        enumService.save(dto, 0L);
         Hibernate.initialize(dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @GetMapping(value = {"/{entityTypeName}/{id}", "/{entityTypeName}"})
-    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeName, @PathVariable(required = false) Optional<String> id) {
+    @GetMapping(value = {"/{entityTypeId}/{id}", "/{entityTypeId}"})
+    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeId, @PathVariable(required = false) Optional<String> id) {
         if (id.isEmpty()) {
-            EntityTypeDto entityType = entityTypeService.findByName(entityTypeName);
+            EntityTypeDto entityType = entityTypeService.findById(Long.valueOf(entityTypeId));
             if (entityType == null)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             Long entityId = entityType.getId();
