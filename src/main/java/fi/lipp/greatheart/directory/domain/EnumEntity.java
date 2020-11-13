@@ -14,10 +14,7 @@ public class EnumEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    String engName;
-
-    @NotNull
-    String rusName;
+    String name;
 
     @NotNull
     Long enumTypeId;

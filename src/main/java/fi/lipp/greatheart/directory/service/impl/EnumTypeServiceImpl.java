@@ -1,7 +1,9 @@
 package fi.lipp.greatheart.directory.service.impl;
 
+import fi.lipp.greatheart.directory.domain.EnumTypeEntity;
 import fi.lipp.greatheart.directory.dto.EnumTypeDto;
 import fi.lipp.greatheart.directory.repository.EnumTypeRepository;
+import fi.lipp.greatheart.directory.service.mappers.EnumTypeMapper;
 import fi.lipp.greatheart.directory.service.services.EnumTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import java.util.Optional;
 public class EnumTypeServiceImpl implements EnumTypeService {
     @Autowired
     EnumTypeRepository repository;
+    @Autowired
+    EnumTypeMapper mapper;
 
     @Override
     public List<EnumTypeDto> findAllEnumTypes() {
@@ -21,11 +25,8 @@ public class EnumTypeServiceImpl implements EnumTypeService {
 
     @Override
     public EnumTypeDto findEnumTypeById(Long id) {
-        return null;
+        Optional<EnumTypeEntity> enumTypeEntity = repository.findById(id);
+        return enumTypeEntity.map(typeEntity -> mapper.convert(typeEntity)).orElse(null);
     }
 
-    @Override
-    public EnumTypeDto findEnumTypeByEngName(String engName) {
-        return null;
-    }
 }
