@@ -10,5 +10,5 @@ public interface EnumService {
 
     EnumDto findEnumById(Long enumId);
 
-    void save(EnumDto dto);
+    void save(EnumDto dto, Long id);
 }

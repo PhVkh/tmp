@@ -40,7 +40,7 @@ public class EnumServiceImpl implements EnumService {
     }
 
     @Override
-    public void save(EnumDto dto) {
+    public void save(EnumDto dto, Long typeId) {
         repository.save(mapper.convert(dto));
     }
 

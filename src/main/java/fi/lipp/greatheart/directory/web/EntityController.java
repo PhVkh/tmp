@@ -3,12 +3,10 @@ package fi.lipp.greatheart.directory.web;
 import fi.lipp.greatheart.directory.domain.EntityEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
-import fi.lipp.greatheart.directory.dto.EnumDto;
 import fi.lipp.greatheart.directory.service.services.EntityService;
 import fi.lipp.greatheart.directory.service.services.EntityTypeService;
 import fi.lipp.greatheart.directory.service.services.EnumService;
 import fi.lipp.greatheart.directory.service.services.EnumTypeService;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +44,11 @@ public class EntityController {
                 .makeResponse();
     }
 
-    @PostMapping(value = "/addEnum")
-    public ResponseEntity<String> addEnum(@RequestBody EnumDto dto) {
-        enumService.save(dto);
-        Hibernate.initialize(dto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @PostMapping(value = "/addEnum")
+//    public ResponseEntity<String> addEnum(@RequestBody EnumDto dto, @RequestParam("enumType") String enumTypeId) {
+//  //      Hibernate.initialize(dto);
+//  //      return Response.EXECUTE_RAW(() -> enumService.save(dto, Long.valueOf(enumTypeId))).makeResponse();
+//    }
 
 
     @GetMapping(value = {"/{entityTypeName}/{id}", "/{entityTypeName}"})

@@ -10,6 +10,4 @@ public interface EntityTypeMapper {
 
     EntityTypeEntity convert(EntityTypeDto dto);
 
-
-
 }
