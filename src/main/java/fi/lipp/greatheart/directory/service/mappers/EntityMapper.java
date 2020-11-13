@@ -1,13 +1,13 @@
 package fi.lipp.greatheart.directory.service.mappers;
 
 import fi.lipp.greatheart.directory.domain.EntityEntity;
+import fi.lipp.greatheart.directory.domain.EntityTypeEntity;
 import fi.lipp.greatheart.directory.domain.EnumEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.repository.EntityRepository;
+import fi.lipp.greatheart.directory.repository.EntityTypeRepository;
 import fi.lipp.greatheart.directory.repository.EnumRepository;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -21,6 +21,9 @@ public abstract class EntityMapper {
 
     @Autowired
     EntityRepository entityRepository;
+
+    @Autowired
+    EntityTypeRepository entityTypeRepository;
 
     @Mapping(source = "json", target = "json", qualifiedByName = "complicatedJsonToSimple")
     public abstract EntityDto convert(EntityEntity entity);
@@ -53,5 +56,12 @@ public abstract class EntityMapper {
         }
 
         return json;
+    }
+
+    @AfterMapping
+    void addTitle(EntityEntity entity, @MappingTarget EntityDto dto) {
+        Optional<EntityTypeEntity> entityType = entityTypeRepository.findById(entity.getEntityType());
+        entityType.ifPresent(entityTypeEntity -> dto.setTitle(entityTypeEntity.getTitleField()));
+        //TODO : кинуть экспешн, если entityType не представлен
     }
 }
