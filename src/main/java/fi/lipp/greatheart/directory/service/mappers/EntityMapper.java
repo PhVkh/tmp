@@ -61,10 +61,7 @@ public abstract class EntityMapper {
     @AfterMapping
     void addTitle(EntityEntity entity, @MappingTarget EntityDto dto) {
         Optional<EntityTypeEntity> entityType = entityTypeRepository.findById(entity.getEntityType());
-        if (entityType.isPresent()) {
-            dto.setTitle(entityType.get().getTitleField());
-            dto.setName(entityType.get().getName());
-        }
+        entityType.ifPresent(entityTypeEntity -> dto.setTitle(entityTypeEntity.getTitleField()));
         //TODO : кинуть экспешн, если entityType не представлен
     }
 }

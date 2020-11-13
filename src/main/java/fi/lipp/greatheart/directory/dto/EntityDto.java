@@ -8,5 +8,4 @@ import java.util.Map;
 public class EntityDto {
     private Map<String, Object> json;
     private String title;
-    private String name;
 }
