@@ -13,4 +13,6 @@ public interface EntityTypeService {
     List<EntityTypeDto> findMainEntities();
 
     void save(EntityTypeDto dto);
+
+    EntityTypeDto findById(Long valueOf);
 }

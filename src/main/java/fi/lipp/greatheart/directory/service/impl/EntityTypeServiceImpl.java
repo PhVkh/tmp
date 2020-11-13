@@ -47,4 +47,10 @@ public class EntityTypeServiceImpl implements EntityTypeService {
         repository.save(entity);
     }
 
+    @Override
+    public EntityTypeDto findById(Long entityTypeId) {
+        Optional<EntityTypeEntity> entityType = repository.findById(entityTypeId);
+        return entityType.map(x -> mapper.convert(x)).orElse(null);
+    }
+
 }
