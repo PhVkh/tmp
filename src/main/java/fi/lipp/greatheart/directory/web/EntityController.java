@@ -57,15 +57,17 @@ public class EntityController {
 
     @PostMapping(value = "/addTransactions")
     public ResponseEntity<Response<Boolean>> addTransactions(@RequestBody Map<String, Object[]> toUpdate,
-                                                                  @RequestParam Long entityId) {
+                                                             @RequestParam Long entityId) {
         return Response
                 .EXECUTE_RAW(() -> entityService.addValuesToArray(entityId, toUpdate))
                 .makeResponse();
     }
 
     @PostMapping(value = "/addEnum")
-    public ResponseEntity<String> addEnum(@RequestBody EnumDto dto) {
-        enumService.save(dto);
+    public ResponseEntity<String> addEnum(@RequestBody EnumDto dto,
+                                          @RequestParam String enumType) {
+        //проверяем,что такой enum существует
+        enumService.save(dto,0L );
         Hibernate.initialize(dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
