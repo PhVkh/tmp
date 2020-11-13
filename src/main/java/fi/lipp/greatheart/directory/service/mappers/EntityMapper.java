@@ -65,6 +65,6 @@ public abstract class EntityMapper {
             dto.setTitle(entityType.get().getTitleField());
             dto.setName(entityType.get().getName());
         }
-        //TODO : кинуть экспешн, если entityType не представлен
+        //TODO : бросить экспешн
     }
 }
