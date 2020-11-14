@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EntityRepository extends JpaRepository<EntityEntity, Long> {
-    public List<EntityEntity> findByEntityType(Long entityTypeId);
-    public Optional<EntityEntity> findById(Long id);
+    List<EntityEntity> findByEntityType(Long entityTypeId);
+    Optional<EntityEntity> findById(Long id);
+    void deleteAllByEntityType(Long entityTypeId);
 }
