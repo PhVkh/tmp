@@ -89,7 +89,6 @@ public class EntityTypeServiceImpl implements EntityTypeService {
         if (title == null || title.isBlank())
             return Response.BAD("Необходимо передать главное поле");
 
-
         return Response.EXECUTE(() -> entityTypeRepository.save(mapper.convert(dto)));
     }
 
