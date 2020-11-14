@@ -48,7 +48,7 @@ public class EntityServiceImpl implements EntityService {
             return Response.BAD("Типа сущности с id " + entityTypeId + "не существует в базе.");
 
         //находим какие поля должны быть у сущности данного типа
-        List<String> necessaryFields = entityType.get().getNecessaryFields();
+        List<String> necessaryFields = new ArrayList<>(entityType.get().getNecessaryFields().keySet());
 
         //Проверим, что в json содержатся все необходимые ключи
         if (!entity.getJson().keySet().containsAll(necessaryFields))

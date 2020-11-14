@@ -6,7 +6,8 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Entity
@@ -24,12 +25,9 @@ public class EntityTypeEntity {
 
     String description;
 
-    @Type(type = "list-array")
-    @Column(
-            name = "necessary_fields",
-            columnDefinition = "text[]"
-    )
-    List<String> necessaryFields;
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb", name = "necessary_fields")
+    Map<String, Object> necessaryFields = new HashMap<>();
 
     @Column(name = "is_main")
     Boolean main;

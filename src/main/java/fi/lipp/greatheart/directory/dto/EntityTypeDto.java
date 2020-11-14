@@ -2,7 +2,7 @@ package fi.lipp.greatheart.directory.dto;
 
 import lombok.Data;
 
-import java.util.List;
+import java.util.Map;
 
 @Data
 public class EntityTypeDto {
@@ -12,7 +12,7 @@ public class EntityTypeDto {
 
     String description;
 
-    List<String> necessaryFields;
+    Map<String, Object> necessaryFields;
 
     Boolean main;
 
