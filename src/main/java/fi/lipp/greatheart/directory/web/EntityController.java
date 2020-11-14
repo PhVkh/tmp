@@ -1,6 +1,7 @@
 package fi.lipp.greatheart.directory.web;
 
 import fi.lipp.greatheart.directory.domain.EntityEntity;
+import fi.lipp.greatheart.directory.domain.EntityTypeEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
 import fi.lipp.greatheart.directory.service.services.EntityService;
@@ -41,8 +42,13 @@ public class EntityController {
     public ResponseEntity<Response<EntityEntity>> addEntity(@RequestBody EntityDto dto,
                                                             @RequestParam("entityType") String entityTypeId) {
         return Response
-                .EXECUTE_RAW(() -> entityService.save(dto, Long.valueOf(entityTypeId)))
+                .EXECUTE_RAW(() -> entityService.saveEntity(dto, Long.valueOf(entityTypeId)))
                 .makeResponse();
+    }
+
+    @PostMapping(value = "/addEntityType")
+    public ResponseEntity<Response<EntityTypeEntity>> addEntityType(@RequestBody EntityTypeDto dto) {
+        return Response.EXECUTE_RAW(() -> entityTypeService.save(dto)).makeResponse();
     }
 
     @PostMapping(value = "/updateEntity")

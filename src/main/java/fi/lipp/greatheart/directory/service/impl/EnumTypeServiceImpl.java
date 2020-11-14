@@ -55,6 +55,7 @@ public class EnumTypeServiceImpl implements EnumTypeService {
                     dto.getName().toLowerCase().strip()))
                 return Response.BAD("Enum_type c именем " + dto.getName() + " уже существует.");
         }
+
         return Response.EXECUTE(() -> repository.save(
                 mapper.convert(dto)));
     }

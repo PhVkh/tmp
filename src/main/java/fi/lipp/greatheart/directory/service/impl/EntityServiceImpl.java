@@ -39,20 +39,19 @@ public class EntityServiceImpl implements EntityService {
                 .collect(Collectors.toList());
     }
 
-    //TODO : какой эксепшен кидать и как его правильно ловить
-    public Response<EntityEntity> save(EntityDto dto, Long entityTypeId) {
+    public Response<EntityEntity> saveEntity(EntityDto dto, Long entityTypeId) {
         EntityEntity entity = mapper.convert(dto);
         entity.setEntityType(entityTypeId);
 
-        Optional<EntityTypeEntity> entityType= entityTypeRepository.findById(entityTypeId);
-        if(entityType.isEmpty())
+        Optional<EntityTypeEntity> entityType = entityTypeRepository.findById(entityTypeId);
+        if (entityType.isEmpty())
             return Response.BAD("Типа сущности с id " + entityTypeId + "не существует в базе.");
 
         //находим какие поля должны быть у сущности данного типа
         List<String> necessaryFields = entityType.get().getNecessaryFields();
 
         //Проверим, что в json содержатся все необходимые ключи
-        if(!entity.getJson().keySet().containsAll(necessaryFields))
+        if (!entity.getJson().keySet().containsAll(necessaryFields))
             throw new IllegalArgumentException();
 
         //Проверим, что значения в ключах ненулевые
