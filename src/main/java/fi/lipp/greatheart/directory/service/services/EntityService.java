@@ -17,4 +17,6 @@ public interface EntityService {
     Response<EntityEntity> updateFields(Long entityId, Map<String, Object> toUpdate);
     Response<Boolean> addValuesToArray(Long entityId, Map<String, Object[]> values);
     EntityDto findById(Long id);
+    Response<Boolean> deleteEntity(Long entityId);
+    Response<Boolean> deleteEntityType(Long entityTypeId);
 }

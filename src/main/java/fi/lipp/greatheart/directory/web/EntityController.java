@@ -82,5 +82,14 @@ public class EntityController {
                             entityService.findById(id.get())), HttpStatus.OK);
     }
 
+    @DeleteMapping("/deleteEntity")
+    public ResponseEntity<Response<Boolean>> deleteEntity(@RequestParam Long id) {
+        return entityService.deleteEntity(id).makeResponse();
+    }
+
+    @DeleteMapping("/deleteEntityType")
+    public ResponseEntity<Response<Boolean>> deleteEntityType(@RequestParam Long id) {
+        return entityService.deleteEntityType(id).makeResponse();
+    }
 
 }
