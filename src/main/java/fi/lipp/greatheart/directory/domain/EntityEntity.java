@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,4 +25,9 @@ public class EntityEntity {
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb", name = "entity")
     private Map<String, Object> json = new HashMap<>();
+
+    private String creatorLogin;
+    private LocalDateTime creationTime;
+    private String lastModifiedByLogin;
+    private LocalDateTime lastModifiedTime;
 }

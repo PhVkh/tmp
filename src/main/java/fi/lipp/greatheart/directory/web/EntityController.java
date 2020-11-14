@@ -3,6 +3,7 @@ package fi.lipp.greatheart.directory.web;
 import fi.lipp.greatheart.directory.domain.EntityEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
+import fi.lipp.greatheart.directory.security.CustomUserDetails;
 import fi.lipp.greatheart.directory.service.services.EntityService;
 import fi.lipp.greatheart.directory.service.services.EntityTypeService;
 import fi.lipp.greatheart.directory.service.services.EnumService;
@@ -10,8 +11,11 @@ import fi.lipp.greatheart.directory.service.services.EnumTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +43,10 @@ public class EntityController {
 
     @PostMapping(value = "/addEntity")
     public ResponseEntity<Response<EntityEntity>> addEntity(@RequestBody EntityDto dto,
-                                                            @RequestParam("entityType") String entityTypeId) {
+                                                            @RequestParam("entityType") String entityTypeId,
+                                                            @AuthenticationPrincipal Optional<CustomUserDetails> user) {
+        dto.setCreatorLogin(user.get().getUsername());
+        dto.setCreationTime(LocalDateTime.now());
         return Response
                 .EXECUTE_RAW(() -> entityService.save(dto, Long.valueOf(entityTypeId)))
                 .makeResponse();
