@@ -10,4 +10,5 @@ public class User {
     private String login;
     private String password;
     private List<String> roles;
+
 }

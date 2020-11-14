@@ -8,7 +8,6 @@ import fi.lipp.greatheart.directory.dto.EntityTypeDto;
 import fi.lipp.greatheart.directory.security.CustomUserDetails;
 import fi.lipp.greatheart.directory.service.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,7 +46,8 @@ public class EntityController {
     }
 
     @GetMapping(value = {"/mainTypes"})
-    public ResponseEntity<List<EntityTypeDto>> findAll(@AuthenticationPrincipal Optional<CustomUserDetails> user, HttpServletRequest request) {
+    public ResponseEntity<List<EntityTypeDto>> findAll(@AuthenticationPrincipal Optional<CustomUserDetails> user,
+                                                       HttpServletRequest request) {
         AuditDto audit = buildAuditDto(request, user, null);
         auditService.save(audit);
         return new ResponseEntity<>(entityTypeService.findMainEntities(), HttpStatus.OK);
@@ -91,7 +91,8 @@ public class EntityController {
 
 
     @GetMapping(value = {"/{entityTypeId}/{id}", "/{entityTypeId}"})
-    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeId, @PathVariable(required = false) Optional<Long> id,
+    public ResponseEntity<List<EntityDto>> findAll(@PathVariable String entityTypeId,
+                                                   @PathVariable(required = false) Optional<Long> id,
                                                    @AuthenticationPrincipal Optional<CustomUserDetails> user,
                                                    HttpServletRequest request) {
         AuditDto audit = buildAuditDto(request, user, null);
