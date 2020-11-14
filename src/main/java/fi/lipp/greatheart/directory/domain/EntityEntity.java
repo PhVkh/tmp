@@ -25,9 +25,4 @@ public class EntityEntity {
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb", name = "entity")
     private Map<String, Object> json = new HashMap<>();
-
-    private String creatorLogin;
-    private LocalDateTime creationTime;
-    private String lastModifiedByLogin;
-    private LocalDateTime lastModifiedTime;
 }
