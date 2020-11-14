@@ -3,6 +3,7 @@ package fi.lipp.greatheart.directory.service.impl;
 import fi.lipp.greatheart.directory.domain.EntityTypeEntity;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
 import fi.lipp.greatheart.directory.repository.EntityTypeRepository;
+import fi.lipp.greatheart.directory.repository.FieldTypeRepository;
 import fi.lipp.greatheart.directory.service.mappers.EntityTypeMapper;
 import fi.lipp.greatheart.directory.service.services.EntityTypeService;
 import fi.lipp.greatheart.directory.web.Response;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 public class EntityTypeServiceImpl implements EntityTypeService {
     @Autowired
     EntityTypeRepository entityTypeRepository;
+    @Autowired
+    FieldTypeRepository fieldTypeRepository;
 
     @Autowired
     EntityTypeMapper mapper;
@@ -50,33 +54,41 @@ public class EntityTypeServiceImpl implements EntityTypeService {
         List<String> entityTypeNames = entityTypeRepository.findAll().stream().map(EntityTypeEntity::getName)
                 .map(name -> name.strip().toLowerCase()).
                         collect(Collectors.toList());
+
         if (entityTypeNames.contains(dto.getName().strip().toLowerCase()))
             return Response.BAD(String.format("Имя сущности %s уже существует.", dto.getName().strip()));
 
-
-        //Проверим, что есть title и что значение title есть  necessary_fields
         if (dto.getMain() == null)
             return Response.BAD("Не проставлено значение : является ли сущность  главной или вспомогательной.");
+
+        //Проверим, что есть title
+        if (dto.getTitleField() == null)
+            return Response.BAD("Title не может быть null");
+
+        //Проверим, что есть necessaryFields
+        if (dto.getNecessaryFields() == null)
+            return Response.BAD("Тип сущности должен иметь список полей - не может быть null");
+
+        //проверим, что каждое поле имеет знаечние notnull и тип. Причем тип - известен
+        for (Map.Entry<String, Object> field : dto.getNecessaryFields().entrySet()) {
+            if (field.getValue() == null || !(field.getValue() instanceof Map))
+                return Response.BAD(String.format("Поле %s  должно иметь описание", field.getKey()));
+
+            Map json = (Map) field.getValue();
+
+            //проверим, что есть type и notnull
+            if (!json.containsKey("type") || !json.containsKey("notnull") || json.containsValue(null))
+                return Response.BAD(String.format("Неправильная структура поля %s", field.getKey()));
+
+            String type = (String) json.get("type");
+            if (!fieldTypeRepository.existsByType(type))
+                return Response.BAD(String.format("Тип %s сущности %s не существует в базу", type, field.getKey()));
+        }
 
         String title = dto.getTitleField();
         if (title == null || title.isBlank())
             return Response.BAD("Необходимо передать главное поле");
 
-//        if (dto.getNecessaryFields() == null)
-//            dto.setNecessaryFields(Collections.singletonList(
-//                    StringUtil.capitalize(title.strip())));
-//
-//        List<String> fields = dto.getNecessaryFields().stream().map(
-//                field -> StringUtil.capitalize(field.strip()))
-//                .collect(Collectors.toList());
-//        if (fields.size() == 0 || !fields.contains(StringUtil.capitalize(title.strip())))
-//            dto.getNecessaryFields().add(title);
-//
-//        dto.setTitleField(StringUtil.capitalize(dto.getTitleField().strip()));
-//        dto.setNecessaryFields(dto.getNecessaryFields().stream().map(
-//                field -> StringUtil.capitalize(field.strip()))
-//                .collect(Collectors.toList()));
-//        dto.setName(StringUtil.capitalize(dto.getName().strip()));
 
         return Response.EXECUTE(() -> entityTypeRepository.save(mapper.convert(dto)));
     }
