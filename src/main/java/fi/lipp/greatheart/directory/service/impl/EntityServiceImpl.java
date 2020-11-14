@@ -5,6 +5,8 @@ import fi.lipp.greatheart.directory.domain.EntityTypeEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.repository.EntityRepository;
 import fi.lipp.greatheart.directory.repository.EntityTypeRepository;
+import fi.lipp.greatheart.directory.repository.EnumRepository;
+import fi.lipp.greatheart.directory.repository.EnumTypeRepository;
 import fi.lipp.greatheart.directory.service.mappers.EntityMapper;
 import fi.lipp.greatheart.directory.service.services.EntityService;
 import fi.lipp.greatheart.directory.web.Response;
@@ -24,6 +26,12 @@ public class EntityServiceImpl implements EntityService {
     EntityRepository entityRepository;
     @Autowired
     EntityTypeRepository entityTypeRepository;
+
+    @Autowired
+    EnumTypeRepository enumTypeRepository;
+
+    @Autowired
+    EnumRepository enumRepository;
 
     @Autowired
     EntityMapper mapper;
@@ -122,7 +130,20 @@ public class EntityServiceImpl implements EntityService {
                     break;
                 }
                 case "enum": {
-                    System.out.println("enum");
+                    //проверим, что есть такой тип enum-ов
+                    Map<String, Object> complexField = (Map<String, Object>) fieldEntry.getValue();
+                    if (!complexField.keySet().containsAll(Arrays.asList("enum_type", "id")))
+                        return Response.BAD(String.format("Нерверная структура поля %s", field));
+
+                    if (!enumTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("enum_type")))))
+                        return Response.BAD(String.format(
+                                "Типа Enum-а с id =  %s не существует",
+                                complexField.get("enum_type")));
+                    if (!enumRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
+                        return Response.BAD(String.format(
+                                "Enum-а с id =  %s не существует",
+                                complexField.get("id")));
+
                     break;
                 }
                 case "phone": {
