@@ -11,6 +11,7 @@ import fi.lipp.greatheart.directory.web.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -101,5 +102,29 @@ public class EntityServiceImpl implements EntityService {
 
         return entity.map(entityEntity -> mapper.convert(entityEntity)).orElse(null);
 
+    }
+
+    @Override
+    public Response<Boolean> deleteEntity(Long entityId) {
+        return Response.EXECUTE_RAW(() -> {
+            if (entityRepository.findById(entityId).isEmpty()) {
+                return Response.BAD(false,"Сущность с id = %d не найдена", entityId);
+            }
+            entityRepository.deleteById(entityId);
+            return Response.OK(true);
+        });
+    }
+
+    @Transactional
+    @Override
+    public Response<Boolean> deleteEntityType(Long entityTypeId) {
+        return Response.EXECUTE_RAW(() -> {
+            if (entityTypeRepository.findById(entityTypeId).isEmpty()) {
+                return Response.BAD(false,"Справочник с id = %d не найден", entityTypeId);
+            }
+            entityRepository.deleteAllByEntityType(entityTypeId);
+            entityTypeRepository.deleteById(entityTypeId);
+            return Response.OK(true);
+        });
     }
 }
