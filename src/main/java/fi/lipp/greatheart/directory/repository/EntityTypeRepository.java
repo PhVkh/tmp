@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface EntityTypeRepository extends JpaRepository<EntityTypeEntity, Long> {
     Optional<EntityTypeEntity> findByName(String name);
 
-    Optional<EntityTypeEntity> findById(Long id);
-
     List<EntityTypeEntity> findByMainTrue();
 }
 
