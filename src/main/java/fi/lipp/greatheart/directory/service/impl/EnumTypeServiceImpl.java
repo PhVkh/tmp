@@ -28,9 +28,35 @@ public class EnumTypeServiceImpl implements EnumTypeService {
     }
 
     @Override
-    public EnumTypeDto findEnumTypeById(Long id) {
+    public Response<EnumTypeDto> findEnumTypeById(Long id) {
         Optional<EnumTypeEntity> enumTypeEntity = repository.findById(id);
-        return enumTypeEntity.map(typeEntity -> mapper.convert(typeEntity)).orElse(null);
+        return Response.EXECUTE(() ->
+                enumTypeEntity.map(typeEntity -> mapper.convert(typeEntity)).orElse(null));
+    }
+
+    /**
+     * Метод сохранения типа enum-а в базу c проверками :
+     * на неповторение имени сущности  + на наличие имени сущности
+     *
+     * @param dto dto сущности типа enum-а
+     * @return Ответ об успешном/неуспешном сохранении сущности
+     */
+    @Override
+    public Response<EnumTypeEntity> save(EnumTypeDto dto) {
+        //Проверим, что в dto есть name
+        if (dto.getName() == null || dto.getName().isBlank())
+            return Response.BAD("Имя сущности не может быть пустым");
+
+        //Проверим, что нет enum_type  с таким же именем
+        List<EnumTypeEntity> enumTypes = repository.findAll();
+        for (EnumTypeEntity enumType : enumTypes) {
+            if (enumType.getName().
+                    toLowerCase().strip().equals(
+                    dto.getName().toLowerCase().strip()))
+                return Response.BAD("Enum_type c именем " + dto.getName() + " уже существует.");
+        }
+        return Response.EXECUTE(() -> repository.save(
+                mapper.convert(dto)));
     }
 
 }

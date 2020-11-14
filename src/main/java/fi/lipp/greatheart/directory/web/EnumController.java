@@ -1,6 +1,7 @@
 package fi.lipp.greatheart.directory.web;
 
 import fi.lipp.greatheart.directory.domain.EnumEntity;
+import fi.lipp.greatheart.directory.domain.EnumTypeEntity;
 import fi.lipp.greatheart.directory.dto.EnumDto;
 import fi.lipp.greatheart.directory.dto.EnumTypeDto;
 import fi.lipp.greatheart.directory.service.services.EnumService;
@@ -29,6 +30,15 @@ public class EnumController {
                 .makeResponse();
     }
 
+    @PostMapping(value = "/addEnumType")
+    public ResponseEntity<Response<EnumTypeEntity>> addEnumType(@RequestBody EnumTypeDto dto
+    ) {
+        return Response
+                .EXECUTE_RAW(() -> enumTypeService.save(dto))
+                .makeResponse();
+    }
+
+
     @GetMapping(value = "/types")
     public ResponseEntity<Response<List<EnumTypeDto>>> getAllEnumTypes() {
         return Response.EXECUTE_RAW(() -> enumTypeService.findAllEnumTypes()).makeResponse();
@@ -36,6 +46,8 @@ public class EnumController {
 
     @GetMapping(value = "/elements")
     public ResponseEntity<Response<List<EnumDto>>> getAllEnumTypes(@RequestParam(name = "enumTypeId") Long typeId) {
-        return Response.EXECUTE_RAW(() ->  enumService.findEnumsByEnumTypeId(typeId)).makeResponse();
+        return Response.EXECUTE_RAW(() -> enumService.findEnumsByEnumTypeId(typeId)).makeResponse();
     }
+
+
 }
