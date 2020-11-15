@@ -7,7 +7,9 @@ import fi.lipp.greatheart.directory.dto.AuditDto;
 import fi.lipp.greatheart.directory.dto.EntityDto;
 import fi.lipp.greatheart.directory.dto.EntityTypeDto;
 import fi.lipp.greatheart.directory.security.CustomUserDetails;
-import fi.lipp.greatheart.directory.service.services.*;
+import fi.lipp.greatheart.directory.service.services.AuditService;
+import fi.lipp.greatheart.directory.service.services.EntityService;
+import fi.lipp.greatheart.directory.service.services.EntityTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,6 @@ public class EntityController {
 
     @Autowired private EntityService entityService;
     @Autowired private EntityTypeService entityTypeService;
-    @Autowired private EnumTypeService enumTypeService;
-    @Autowired private EnumService enumService;
     @Autowired private AuditService auditService;
 
     private AuditDto buildAuditDto(HttpServletRequest request, Optional<CustomUserDetails> userDetails, Object requestBody) {
