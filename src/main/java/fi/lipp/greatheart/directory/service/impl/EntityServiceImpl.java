@@ -1,5 +1,6 @@
 package fi.lipp.greatheart.directory.service.impl;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import fi.lipp.greatheart.directory.domain.EntityEntity;
 import fi.lipp.greatheart.directory.domain.EntityTypeEntity;
 import fi.lipp.greatheart.directory.dto.EntityDto;
@@ -147,15 +148,32 @@ public class EntityServiceImpl implements EntityService {
                     break;
                 }
                 case "phone": {
-                    System.out.println("phone");
+                    PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+                    if (!phoneNumberUtil.isPossibleNumber(((String) fieldEntry.getValue()), "RU"))
+                        return Response.BAD("Неверный формат номера телефона");
                     break;
                 }
                 case "email": {
-                    System.out.println("email");
+                    if (!GenericValidator.isEmail((String) fieldEntry.getValue()))
+                        return Response.BAD("Неверный формат email");
                     break;
                 }
                 case "entity": {
                     System.out.println("entity");
+
+                    Map<String, Object> complexField = (Map<String, Object>) fieldEntry.getValue();
+                    if (!complexField.keySet().containsAll(Arrays.asList("entity_type", "id")))
+                        return Response.BAD(String.format("Нерверная структура поля %s", field));
+
+                    if (!entityTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("enum_type")))))
+                        return Response.BAD(String.format(
+                                "Типа Entity с id =  %s не существует",
+                                complexField.get("enum_type")));
+                    if (!enumTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
+                        return Response.BAD(String.format(
+                                "Entity с id =  %s не существует",
+                                complexField.get("id")));
+
                     break;
                 }
             }
