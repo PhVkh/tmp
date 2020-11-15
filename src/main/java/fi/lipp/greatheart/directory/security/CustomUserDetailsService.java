@@ -25,7 +25,7 @@ public class CustomUserDetailsService {
         try {
             HttpClient client = HttpClient.newBuilder().build();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://" + gatewayHost + ":" + gatewayPort + "/validate_token"))
+                    .uri(URI.create("http://" + gatewayHost + ":" + gatewayPort + "/auth/validate_token"))
                     .POST(HttpRequest.BodyPublishers.ofString(token))
                     .header("Authorization","Bearer " + token)
                     .build();
