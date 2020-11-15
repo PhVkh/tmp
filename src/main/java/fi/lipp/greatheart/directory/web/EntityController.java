@@ -54,6 +54,16 @@ public class EntityController {
         return new ResponseEntity<>(entityTypeService.findMainEntities(), HttpStatus.OK);
     }
 
+    @GetMapping("/mainType")
+    public ResponseEntity<Response<EntityTypeDto>> getEntityType(
+            @RequestParam Long entityTypeId,
+            @AuthenticationPrincipal Optional<CustomUserDetails> user,
+            HttpServletRequest request) {
+        AuditDto audit = buildAuditDto(request, user, null);
+        auditService.save(audit);
+        return Response.EXECUTE(() -> entityTypeService.findById(entityTypeId)).makeResponse();
+    }
+
     @PostMapping(value = "/addEntity")
     public ResponseEntity<Response<EntityEntity>> addEntity(@RequestBody EntityDto dto,
                                                             @RequestParam("entityType") String entityTypeId,
