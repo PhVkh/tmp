@@ -2,6 +2,7 @@ package fi.lipp.greatheart.directory.domain;
 
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,4 +13,6 @@ import javax.persistence.Table;
 public class FieldType {
     @Id
     String type;
+    @Column(name = "rus_name")
+    String rusName;
 }
