@@ -77,113 +77,14 @@ public class EntityServiceImpl implements EntityService {
         //Проверям, что нам возвращаются данне нужного типа
         Map<String, Object> fields = dto.getJson();
         for (Map.Entry<String, Object> fieldEntry : fields.entrySet()) {
-            String field = fieldEntry.getKey();
 
             //Проверяем, что fieldValue астится к тому значению, которое там должно лежать
 
-            String fieldTypeAtEntityType = (String) (
-                    (Map) entityType.get()
-                            .getNecessaryFields().get(field))
-                    .get("type");
+            Response<Boolean> response = isFieldCorrect(entityTypeId, fieldEntry.getKey(), fieldEntry.getValue());
+            if (!response.isSuccess())
+                return Response.BAD(response.getMessage());
 
-            switch (fieldTypeAtEntityType) {
-                case "string": {
-
-                    String fieldValue = (String) fieldEntry.getValue();
-                    if (notNullFields.contains(field) && fieldValue.isBlank())
-                        return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-
-                    break;
-                }
-                case "number": {
-                    String fieldValue = (String) fieldEntry.getValue();
-
-                    if (notNullFields.contains(field) && fieldValue.isBlank())
-                        return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-
-                    if (!NumberUtils.isNumber(fieldValue)) {
-                        return Response.BAD(String.format("Поле %s должно быть числом", field));
-                    }
-                    break;
-                }
-                case "date": {
-                    String fieldValue = (String) fieldEntry.getValue();
-
-                    if (notNullFields.contains(field) && fieldValue.isBlank())
-                        return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-
-                    boolean isDate = false;
-                    for (Locale availableLocale : Locale.getAvailableLocales()) {
-                        if (GenericValidator.isDate(fieldValue, availableLocale))
-                            isDate = true;
-                    }
-                    if (!isDate)
-                        return Response.BAD(String.format("Поле %s имеет неверный формат даты", field));
-                    break;
-                }
-                case "boolean": {
-                    String fieldValue = (String) fieldEntry.getValue();
-
-                    if (notNullFields.contains(field) && fieldValue.isBlank())
-                        return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-
-                    if (!Boolean.parseBoolean(fieldValue))
-                        return Response.BAD(String.format("Поле %s имеет неверный формат Boolean", field));
-
-                    break;
-                }
-                case "enum": {
-                    //проверим, что есть такой тип enum-ов
-                    Map<String, Object> complexField = (Map<String, Object>) fieldEntry.getValue();
-                    if (!complexField.keySet().containsAll(Arrays.asList("enum_type", "id")))
-                        return Response.BAD(String.format("Нерверная структура поля %s", field));
-
-                    if (!enumTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("enum_type")))))
-                        return Response.BAD(String.format(
-                                "Типа Enum-а с id =  %s не существует",
-                                complexField.get("enum_type")));
-                    if (!enumRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
-                        return Response.BAD(String.format(
-                                "Enum-а с id =  %s не существует",
-                                complexField.get("id")));
-
-                    break;
-                }
-                case "phone": {
-                    PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-
-                    if (notNullFields.contains(field) && ((String) fieldEntry.getValue()).isBlank())
-                        return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-
-
-                    if (!phoneNumberUtil.isPossibleNumber(((String) fieldEntry.getValue()), "RU"))
-                        return Response.BAD("Неверный формат номера телефона");
-                    break;
-                }
-                case "email": {
-                    if (!GenericValidator.isEmail((String) fieldEntry.getValue()))
-                        return Response.BAD("Неверный формат email");
-                    break;
-                }
-                case "entity": {
-                    System.out.println("entity");
-
-                    Map<String, Object> complexField = (Map<String, Object>) fieldEntry.getValue();
-                    if (!complexField.keySet().containsAll(Arrays.asList("entity_type", "id")))
-                        return Response.BAD(String.format("Нерверная структура поля %s", field));
-
-                    if (!entityTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("enum_type")))))
-                        return Response.BAD(String.format(
-                                "Типа Entity с id =  %s не существует",
-                                complexField.get("enum_type")));
-                    if (!enumTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
-                        return Response.BAD(String.format(
-                                "Entity с id =  %s не существует",
-                                complexField.get("id")));
-
-                    break;
-                }
-            }
+            System.out.println();
         }
 
 
@@ -200,11 +101,14 @@ public class EntityServiceImpl implements EntityService {
 
         EntityEntity entity = entityOptional.get();
 
-
-        List<String> notNullValues = getNotNullFieldsOfEntityType(entity.getEntityType());
+        List<String> fields = getAllFieldsOfEntityType(entity.getEntityType());
 
         for (Map.Entry<String, Object> stringObjectEntry : toUpdate.entrySet()) {
 
+            Response<Boolean> response = isFieldCorrect(entity.getEntityType(), stringObjectEntry.getKey(), stringObjectEntry.getValue());
+
+            if (!response.isSuccess())
+                return Response.BAD(response.getMessage());
         }
 
 
@@ -284,115 +188,133 @@ public class EntityServiceImpl implements EntityService {
         return notNullFields;
     }
 
-//    private boolean isFieldCorrect(Long entityTypeId, String fieldName, Object fieldValueToCheck) {
-//        Optional<EntityTypeEntity> entityTypeEntityOptional = entityTypeRepository.findById(entityTypeId);
-//        if (entityTypeEntityOptional.isEmpty())
-//            throw new IllegalArgumentException("Не существует сущности такого типа! " +
-//                    "Попытка получить ненулевые поля для сущности");
-//
-//        EntityTypeEntity entityTypeEntity = entityTypeEntityOptional.get();
-//
-//        String fieldTypeAtEntityType = (String) (
-//                (Map) entityTypeEntity.getNecessaryFields().get(fieldName))
-//                .get("type");
-//
-//        switch (fieldTypeAtEntityType) {
-//            case "string": {
-//                String fieldValue = (String) fieldEntry.getValue();
-//                if (notNullFields.contains(field) && fieldValue.isBlank())
-//                    return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-//
-//                break;
-//            }
-//            case "number": {
-//                String fieldValue = (String) fieldEntry.getValue();
-//
-//                if (notNullFields.contains(field) && fieldValue.isBlank())
-//                    return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-//
-//                if (!NumberUtils.isNumber(fieldValue)) {
-//                    return Response.BAD(String.format("Поле %s должно быть числом", field));
-//                }
-//                break;
-//            }
-//            case "date": {
-//                String fieldValue = (String) fieldEntry.getValue();
-//
-//                if (notNullFields.contains(field) && fieldValue.isBlank())
-//                    return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-//
-//                boolean isDate = false;
-//                for (Locale availableLocale : Locale.getAvailableLocales()) {
-//                    if (GenericValidator.isDate(fieldValue, availableLocale))
-//                        isDate = true;
-//                }
-//                if (!isDate)
-//                    return Response.BAD(String.format("Поле %s имеет неверный формат даты", field));
-//                break;
-//            }
-//            case "boolean": {
-//                String fieldValue = (String) fieldEntry.getValue();
-//
-//                if (notNullFields.contains(field) && fieldValue.isBlank())
-//                    return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-//
-//                if (!Boolean.parseBoolean(fieldValue))
-//                    return Response.BAD(String.format("Поле %s имеет неверный формат Boolean", field));
-//
-//                break;
-//            }
-//            case "enum": {
-//                //проверим, что есть такой тип enum-ов
-//                Map<String, Object> complexField = (Map<String, Object>) fieldEntry.getValue();
-//                if (!complexField.keySet().containsAll(Arrays.asList("enum_type", "id")))
-//                    return Response.BAD(String.format("Нерверная структура поля %s", field));
-//
-//                if (!enumTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("enum_type")))))
-//                    return Response.BAD(String.format(
-//                            "Типа Enum-а с id =  %s не существует",
-//                            complexField.get("enum_type")));
-//                if (!enumRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
-//                    return Response.BAD(String.format(
-//                            "Enum-а с id =  %s не существует",
-//                            complexField.get("id")));
-//
-//                break;
-//            }
-//            case "phone": {
-//                PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-//
-//                if (notNullFields.contains(field) && ((String) fieldEntry.getValue()).isBlank())
-//                    return Response.BAD(String.format("Поле %s не должно быть пустым", field));
-//
-//
-//                if (!phoneNumberUtil.isPossibleNumber(((String) fieldEntry.getValue()), "RU"))
-//                    return Response.BAD("Неверный формат номера телефона");
-//                break;
-//            }
-//            case "email": {
-//                if (!GenericValidator.isEmail((String) fieldEntry.getValue()))
-//                    return Response.BAD("Неверный формат email");
-//                break;
-//            }
-//            case "entity": {
-//                System.out.println("entity");
-//
-//                Map<String, Object> complexField = (Map<String, Object>) fieldEntry.getValue();
-//                if (!complexField.keySet().containsAll(Arrays.asList("entity_type", "id")))
-//                    return Response.BAD(String.format("Нерверная структура поля %s", field));
-//
-//                if (!entityTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("enum_type")))))
-//                    return Response.BAD(String.format(
-//                            "Типа Entity с id =  %s не существует",
-//                            complexField.get("enum_type")));
-//                if (!enumTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
-//                    return Response.BAD(String.format(
-//                            "Entity с id =  %s не существует",
-//                            complexField.get("id")));
-//
-//                break;
-//            }
-//        }
-//
-//    }
+    private List<String> getAllFieldsOfEntityType(Long entityTypeId) {
+        Optional<EntityTypeEntity> entityTypeEntity = entityTypeRepository.findById(entityTypeId);
+        if (entityTypeEntity.isEmpty())
+            throw new IllegalArgumentException("Не существует сущности такого типа! " +
+                    "Попытка получить ненулевые поля для сущности");
+
+        Map<String, Object> entityFields = entityTypeEntity.get().getNecessaryFields();
+
+
+        return entityFields.keySet().stream().collect(Collectors.toList());
+    }
+
+    private Response<Boolean> isFieldCorrect(Long entityTypeId, String fieldName, Object fieldValueToCheck) {
+        Optional<EntityTypeEntity> entityTypeEntityOptional = entityTypeRepository.findById(entityTypeId);
+        if (entityTypeEntityOptional.isEmpty())
+            throw new IllegalArgumentException("Не существует сущности такого типа! " +
+                    "Попытка получить ненулевые поля для сущности");
+
+        EntityTypeEntity entityTypeEntity = entityTypeEntityOptional.get();
+
+        String fieldTypeAtEntityType = (String) (
+                (Map) entityTypeEntity.getNecessaryFields().get(fieldName))
+                .get("type");
+
+
+        List<String> notNullFields = getNotNullFieldsOfEntityType(entityTypeId);
+
+        switch (fieldTypeAtEntityType) {
+            case "string": {
+                String fieldValue = (String) fieldValueToCheck;
+                if (notNullFields.contains(fieldName) && fieldValue.isBlank())
+                    return Response.BAD(String.format("Значение поля %s не должно быть пустым.", fieldName));
+
+                break;
+            }
+            case "number": {
+                String fieldValue = (String) fieldValueToCheck;
+
+                if (notNullFields.contains(fieldName) && fieldValue.isBlank())
+                    return Response.BAD(String.format("Значение поля %s не должно быть пустым.", fieldName));
+
+
+                if (!NumberUtils.isNumber(fieldValue)) {
+                    return Response.BAD(String.format("Значение поля %s должно являться числом", fieldName));
+                }
+                break;
+            }
+            case "date": {
+                String fieldValue = (String) fieldValueToCheck;
+
+                if (notNullFields.contains(fieldName) && fieldValue.isBlank())
+                    return Response.BAD(String.format("Значение поля %s не должно быть пустым.", fieldName));
+
+
+                boolean isDate = false;
+                for (Locale availableLocale : Locale.getAvailableLocales()) {
+                    if (GenericValidator.isDate(fieldValue, availableLocale))
+                        isDate = true;
+                }
+                if (!isDate)
+                    return Response.BAD(String.format("Значение поля %s должно являться датой.", fieldName));
+                break;
+            }
+            case "boolean": {
+                String fieldValue = (String) fieldValueToCheck;
+
+                if (notNullFields.contains(fieldName) && fieldValue.isBlank())
+                    return Response.BAD(String.format("Значение поля %s не должно быть пустым.", fieldName));
+
+                if (!Boolean.parseBoolean(fieldValue))
+                    return Response.BAD(String.format("Значение поля %s должно являться True False.", fieldName));
+
+                break;
+            }
+            case "enum": {
+                //проверим, что есть такой тип enum-ов
+                Map<String, Object> complexField = (Map<String, Object>) fieldValueToCheck;
+                if (!complexField.keySet().containsAll(Arrays.asList("enum_type", "id")))
+                    return Response.BAD(String.format("Перечисление %s не содержит обязательного поля." +
+                            "Обязательные поля  \"enum_type\"  \"id\" ", fieldName));
+
+                if (!enumTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("enum_type")))))
+                    return Response.BAD(String.format("Перечисления с типом %s не зарегесрировано.", (complexField.get("enum_type"))));
+
+                if (!enumRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
+                    return Response.BAD(String.format("Перечисления с id %s не зарегесрировано.", (complexField.get("id"))));
+
+                break;
+            }
+            case "phone": {
+                PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+
+                if (notNullFields.contains(fieldName) && ((String) fieldValueToCheck).isBlank())
+                    return Response.BAD(String.format("Значение поля %s не должно быть пустым.", fieldName));
+
+
+                if (!phoneNumberUtil.isPossibleNumber(((String) fieldValueToCheck), "RU"))
+                    return Response.BAD(String.format("Значение поля %s не является номером телефона РФ", fieldName));
+                break;
+            }
+            case "email": {
+
+                if (notNullFields.contains(fieldName) && ((String) fieldValueToCheck).isBlank())
+                    return Response.BAD(String.format("Значение поля %s не должно быть пустым.", fieldName));
+
+
+                if (!GenericValidator.isEmail((String) fieldValueToCheck))
+                    return Response.BAD(String.format("Значение поля %s не является email-ом.", fieldName));
+                break;
+            }
+            case "entity": {
+
+                Map<String, Object> complexField = (Map<String, Object>) fieldValueToCheck;
+                if (!complexField.keySet().containsAll(Arrays.asList("entity_type", "id")))
+                    return Response.BAD(String.format("Вложенная сущность %s не содержит обязательного поля." +
+                            "Обязательные поля  \"enum_type\"  \"id\" ", fieldName));
+
+                if (!entityTypeRepository.existsById(Long.valueOf(String.valueOf(complexField.get("entity_type")))))
+                    return Response.BAD(String.format("Типа вложенной сущности %s не зарегесрировано.", (complexField.get("enum_type"))));
+
+                if (!entityRepository.existsById(Long.valueOf(String.valueOf(complexField.get("id")))))
+                    return Response.BAD(String.format(" вложенной сущности с id = %s не зарегесрировано.", (complexField.get("enum_type"))));
+                break;
+            }
+        }
+        return Response.OK(Boolean.TRUE);
+    }
+
+
 }
