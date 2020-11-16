@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EnumServiceImpl implements EnumService {
@@ -26,14 +25,9 @@ public class EnumServiceImpl implements EnumService {
     EnumMapper mapper;
 
     @Override
-    public Response<List<EnumDto>> findEnumsByEnumTypeId(Long enumTypeId) {
-        return Response.EXECUTE(() ->
-                enumRepository.findAllByEnumTypeId(enumTypeId).stream()
-                        .map(x -> mapper.convert(x))
-                        .collect(Collectors.toList())
-        );
+    public Response<List<EnumEntity>> findEnumsByEnumTypeId(Long enumTypeId) {
+        return Response.EXECUTE(() -> enumRepository.findAllByEnumTypeId(enumTypeId));
     }
-
 
     @Override
     public EnumDto findEnumById(Long enumId) {

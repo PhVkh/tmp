@@ -45,7 +45,7 @@ public class EnumController {
     }
 
     @GetMapping(value = "/elements")
-    public ResponseEntity<Response<List<EnumDto>>> getAllEnumTypes(@RequestParam(name = "enumTypeId") Long typeId) {
+    public ResponseEntity<Response<List<EnumEntity>>> getAllEnumTypes(@RequestParam(name = "enumTypeId") Long typeId) {
         return Response.EXECUTE_RAW(() -> enumService.findEnumsByEnumTypeId(typeId)).makeResponse();
     }
 
