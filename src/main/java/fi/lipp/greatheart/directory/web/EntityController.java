@@ -27,14 +27,17 @@ import java.util.Optional;
 @RequestMapping("entities")
 public class EntityController {
 
-    @Autowired private EntityService entityService;
-    @Autowired private EntityTypeService entityTypeService;
-    @Autowired private AuditService auditService;
+    @Autowired
+    private EntityService entityService;
+    @Autowired
+    private EntityTypeService entityTypeService;
+    @Autowired
+    private AuditService auditService;
 
     private AuditDto buildAuditDto(HttpServletRequest request, Optional<CustomUserDetails> userDetails, Object requestBody) {
         ObjectMapper mapper = new ObjectMapper();
         AuditDto auditDto = new AuditDto();
-        auditDto.setUser(userDetails.isPresent()? userDetails.get().getUsername() : "no user");
+        auditDto.setUser(userDetails.isPresent() ? userDetails.get().getUsername() : "no user");
         auditDto.setTime(LocalDateTime.now());
         try {
             auditDto.setRequestBody(mapper.writeValueAsString(requestBody));
@@ -134,5 +137,6 @@ public class EntityController {
     public ResponseEntity<Response<Boolean>> deleteEntityType(@RequestParam Long id) {
         return entityService.deleteEntityType(id).makeResponse();
     }
+
 
 }

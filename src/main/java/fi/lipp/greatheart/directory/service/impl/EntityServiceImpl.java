@@ -168,6 +168,19 @@ public class EntityServiceImpl implements EntityService {
         });
     }
 
+    @Override
+    public Response<EntityEntity> findByLogin(String login) {
+        List<EntityEntity> entities = entityRepository.findByEntityType(1L)
+                .stream().filter(p -> (p.getJson().containsKey("login"))).collect(Collectors.toList());
+
+        List<EntityEntity> entity = entities.stream().filter(p -> p.getJson().get("login").equals(login)).collect(Collectors.toList());
+
+        if (entity.size() == 0)
+            return Response.BAD(String.format("Ифнормация о сотруднике %s еще не внесена в систему.", login));
+
+        return Response.EXECUTE(() -> entity.get(0));
+    }
+
     private List<String> getNotNullFieldsOfEntityType(Long entityTypeId) {
         Optional<EntityTypeEntity> entityTypeEntity = entityTypeRepository.findById(entityTypeId);
         if (entityTypeEntity.isEmpty())

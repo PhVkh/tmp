@@ -1,8 +1,10 @@
 package fi.lipp.greatheart.directory.web;
 
+import fi.lipp.greatheart.directory.domain.EntityEntity;
 import fi.lipp.greatheart.directory.domain.FieldType;
 import fi.lipp.greatheart.directory.dto.StorageAccess;
 import fi.lipp.greatheart.directory.service.impl.FieldTypesServiceImpl;
+import fi.lipp.greatheart.directory.service.services.EntityService;
 import fi.lipp.greatheart.directory.service.services.StorageAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class HelpController {
 
     @Autowired
     StorageAccessService storageAccessService;
+
+    @Autowired
+    EntityService entityService;
 
     @GetMapping(value = "/fieldTypes")
     public ResponseEntity<Response<List<FieldType>>> getFields() {
@@ -49,6 +54,11 @@ public class HelpController {
         return Response
                 .EXECUTE_RAW(() -> storageAccessService.removeAccessEntitiesToLogin(param.getLogin(), param.getEntityListAll()))
                 .makeResponse();
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<Response<EntityEntity>> getProfile(@RequestParam(name = "login") String login) {
+        return entityService.findByLogin(login).makeResponse();
     }
 
 

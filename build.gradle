@@ -42,8 +42,11 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.0.Final'
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+
 	}
 }
 
