@@ -9,4 +9,5 @@ public class EntityDto {
     private Map<String, Object> json;
     private String title;
     private String name;
+    private Long id;
 }
